@@ -32,9 +32,16 @@ System.out.println("Do you want to continue calculating? Y/N");
             if (answer.charAt(0) == 'n') {
                 answeFlag = true;
                 System.out.println("Thank you for using calculator, Have good day! ");
+                flagNoInputError=true;
             }
-            if (answer.charAt(0) == 'y')
+            else if (answer.charAt(0) == 'y')
+            {
                 answeFlag = false;
+                flagNoInputError=true;
+            }
+
+                else
+            System.out.println("Please enter Y for Yes or N for No");//Error handling for input.
         }//End of while
         return answeFlag;
     }
