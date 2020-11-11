@@ -5,18 +5,19 @@ import java.util.Stack;
 * I  Using a Stack to Evaluate an Expression.I use two stack ;one for operators and one for operands .
 * */
 public class Cal {
+static double resultInMemory;//M for string a result like a calculator.
+    static double resultInMemoryTemp;
 
     public  static  void main(String args[])
     {
         Boolean exitFlag=false;//Flag for exit app.
-double ac;//AC for string a result
+        welcomeAndInfo();
         do {
 
-
-ac=simpleCal();
-             System.out.println(ac);
-exitFlag=exit();
-        }while (!exitFlag);
+            resultInMemory =simpleCal();
+            resultInMemoryManager();
+            exitFlag=exit();
+        }while (!exitFlag);//loop is keeping on until exitflag be true.
     }//End of main
 
     public static boolean exit()//Method for exit from app.
@@ -24,15 +25,17 @@ exitFlag=exit();
         boolean answeFlag=false;
 System.out.println("Do you want to continue calculating? Y/N");
         Scanner sc=new Scanner(System.in);
-        String answer=sc.next();
-        answer=answer.toLowerCase();
-        if(answer.charAt(0)=='n')
-        {
-            answeFlag=true;
-            System.out.println("Thank you for using calculator, Have good day! ");
-        }
-        if(answer.charAt(0)=='y')
-             answeFlag=false;
+        boolean flagNoInputError=false;
+        while(!flagNoInputError) {
+            String answer = sc.next();
+            answer = answer.toLowerCase();
+            if (answer.charAt(0) == 'n') {
+                answeFlag = true;
+                System.out.println("Thank you for using calculator, Have good day! ");
+            }
+            if (answer.charAt(0) == 'y')
+                answeFlag = false;
+        }//End of while
         return answeFlag;
     }
 
@@ -41,86 +44,113 @@ System.out.println("Do you want to continue calculating? Y/N");
 
         Scanner scan = new Scanner(System.in);
         /* Create stacks for operators and operands */
-        Stack<Integer> op  = new Stack<Integer>();
-        Stack<Double> val = new Stack<Double>();
-        /* Create temporary stacks for operators and operands */
-        Stack<Integer> optmp  = new Stack<Integer>();
-        Stack<Double> valtmp = new Stack<Double>();
-        /* Accept expression */
-        // System.out.println("Evaluation Of Arithmetic Expression Using Stacks Test\n");
-        System.out.println("Enter expression\n");
-        String input = scan.next();
-        input = "0" + input;
-        input = input.replaceAll("-","+-");
-        /* Store operands and operators in respective stacks */
+        Stack<Integer> operatorStack  = new Stack<Integer>();
+        Stack<Double> operandStack = new Stack<Double>();
+        //Create temp stacks for operators and operands.
+        Stack<Integer> operatorStackTemp  = new Stack<Integer>();
+        Stack<Double> operandsStackTemp = new Stack<Double>();
+
+        System.out.println("Enter expression: \n");
+        String inputExpressionString = scan.next();// An Expression as string.
+        inputExpressionString = "0" + inputExpressionString;
+        inputExpressionString = inputExpressionString.replaceAll("-","+-");
+        // Store operands and operators in respective stacks.
         String temp = "";
-        for (int i = 0;i < input.length();i++)
+        for (int i = 0;i < inputExpressionString.length();i++)
         {
-            char ch = input.charAt(i);
+            char ch = inputExpressionString.charAt(i);
             if (ch == '-')
                 temp = "-" + temp;
             else if (ch != '+' &&  ch != '*' && ch != '/')
                 temp = temp + ch;
             else
             {
-                val.push(Double.parseDouble(temp));
-                op.push((int)ch);
+                operandStack.push(Double.parseDouble(temp));
+                operatorStack.push((int)ch);
                 temp = "";
             }
         }
-        val.push(Double.parseDouble(temp));
-        /* Create char array of operators as per precedence */
-        /* -ve sign is already taken care of while storing */
-        char operators[] = {'/','*','+'};
-        /* Evaluation of expression */
+        operandStack.push(Double.parseDouble(temp));
+        //* Create char array of operators as per precedence . -ve sign is already taken care of while storing.
+        char operators[] = {'/','*','+'};// Evaluation of expression.
+
         for (int i = 0; i < 3; i++)
         {
             boolean it = false;
-            while (!op.isEmpty())
+            while (!operatorStack.isEmpty())
             {
-                int optr = op.pop();
-                double v1 = val.pop();
-                double v2 = val.pop();
-                if (optr == operators[i])
+                int optr = operatorStack.pop();
+                double v1 = operandStack.pop();
+                double v2 = operandStack.pop();
+                if (optr == operators[i])    // if operator matches evaluate and store in temporary stack.
+
                 {
-                    /* if operator matches evaluate and store in temporary stack */
                     if (i == 0)
                     {
-                        valtmp.push(v2 / v1);
+                        operandsStackTemp.push(v2 / v1);
                         it = true;
                         break;
                     }
                     else if (i == 1)
                     {
-                        valtmp.push(v2 * v1);
+                        operandsStackTemp.push(v2 * v1);
                         it = true;
                         break;
                     }
                     else if (i == 2)
                     {
-                        valtmp.push(v2 + v1);
+                        operandsStackTemp.push(v2 + v1);
                         it = true;
                         break;
                     }
                 }
                 else
                 {
-                    valtmp.push(v1);
-                    val.push(v2);
-                    optmp.push(optr);
+                    operandsStackTemp.push(v1);
+                    operandStack.push(v2);
+                    operatorStackTemp.push(optr);
                 }
             }
-            /* Push back all elements from temporary stacks to main stacks */
-            while (!valtmp.isEmpty())
-                val.push(valtmp.pop());
-            while (!optmp.isEmpty())
-                op.push(optmp.pop());
-            /* Iterate again for same operator */
+            // Push back all elements from temporary stacks to main stacks.
+            while (!operandsStackTemp.isEmpty())
+                operandStack.push(operandsStackTemp.pop());
+            while (!operatorStackTemp.isEmpty())
+                operatorStack.push(operatorStackTemp.pop());
             if (it)
                 i--;
         }
-      result=val.pop();
-        System.out.println("\nResult = "+result);
-        return result;
+      result=operandStack.pop();
+        System.out.println("\nResult = "+result);//print Result
+        return result;//return Result
+    }
+
+    public static void welcomeAndInfo()//the method for first time using app and information about how to use it.
+    {
+        System.out.println("Hi and welcome to the Calculator App!\nYou can enter as many numbers you wish.You cant use bracket ().A example of input can be like 5+6*6.5+9-8/7.5\nYou need to use . for decimal numbers for example 4.5 .\n use of the four mathematical operands (+, -, *, /) ");
+        System.out.println("Please enter your first expression");
+    }
+
+    public static void resultInMemoryManager()//the method for storing and clearing a AC .
+    {
+System.out.println(" The result had been stored . Do you want to keep the result for next time calculation  ? Y/N");
+Scanner sc=new Scanner(System.in);
+boolean flagNoInputError=false;
+while(!flagNoInputError) {
+    String answer = sc.next();
+    answer = answer.toLowerCase();
+    if (answer.charAt(0) == 'y')
+    {
+        resultInMemoryTemp = resultInMemory;
+        flagNoInputError=true;
+    }
+    else if (answer.charAt(0) == 'n') {
+        System.out.println("The result was : " + resultInMemory + " and it had been cleared now.");
+        resultInMemory = 0;
+        flagNoInputError=true;
+
+
+    } else
+        System.out.println("Please enter Y for Yes or N for No");//Error handling for input.
+}//End of while
     }
 }//End of Class
