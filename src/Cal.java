@@ -16,6 +16,11 @@ static double resultInMemory;//M for string a result like a calculator.
 
             resultInMemory =simpleCal();
             resultInMemoryManager();
+            System.out.println("Do you want to calucate advance Sin,Cos;tag?Y/N");
+            Scanner an=new Scanner(System.in);
+            String yes= an.next();
+            if(yes.charAt(0)=='y')
+            calAdvanced();
             exitFlag=exit();
         }while (!exitFlag);//loop is keeping on until exitflag be true.
     }//End of main
@@ -159,5 +164,47 @@ while(!flagNoInputError) {
     } else
         System.out.println("Please enter Y for Yes or N for No");//Error handling for input.
 }//End of while
+    }
+
+    public static void calAdvanced()
+    {
+     double a=Math.toRadians(resultInMemory);
+     double resultAdvance;
+     boolean flagNoinputErroe=false;
+        System.out.println("PLease enter S for Sinos , C for cosinus , L for tangae ");
+
+        Scanner sc=new Scanner(System.in);
+     while(!flagNoinputErroe)
+     {
+         String answer = sc.next();
+         answer = answer.toLowerCase();
+         switch (answer.charAt(0)) {
+             case 's':
+               resultAdvance=  Math.sin(a);
+               flagNoinputErroe=true;
+                 System.out.println("Sinus is : "+resultAdvance);
+
+                 break;
+             case 'c':
+                resultAdvance= Math.cos(a);
+                 flagNoinputErroe=true;
+                 System.out.println("Cosinos is : "+resultAdvance);
+
+                 break;
+
+             case 'l':
+                resultAdvance= Math.tan(a);
+                 flagNoinputErroe=true;
+                 System.out.println("Tangae is : "+resultAdvance);
+
+                 break;
+
+
+
+             default:
+                 System.out.println("PLease enter valid input");
+         }//End of switch
+     }//End of while
+
     }
 }//End of Class
